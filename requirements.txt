@@ -1,0 +1,4 @@
+coverage
+pytest~=6.1.2
+setuptools~=40.8.0
+mock~=4.0.2
