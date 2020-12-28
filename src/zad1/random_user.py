@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 class RandomUser:
@@ -7,17 +8,22 @@ class RandomUser:
         self.api = 'https://randomuser.me/api/?noinfo'
 
     def get_random_user(self):
-        return requests.get(self.api).json()
+        response = requests.get(self.api)
+        if 'json' in response.headers.get('Content-Type'):
+            return response.json()
 
     def get_n_random_users(self, n):
+        response = requests.get(self.api + f'&results={n}')
         if isinstance(n, int):
             if n > 0:
-                return requests.get(self.api + f'&results={n}').json()
+                if 'json' in response.headers.get('Content-Type'):
+                    return response.json()
             else:
                 return None
         elif isinstance(n, str):
             if n.isnumeric():
-                return requests.get(self.api + f'&results={n}').json()
+                if 'json' in response.headers.get('Content-Type'):
+                    return response.json()
             else:
                 raise TypeError('Input must refer to an int!')
         else:
@@ -30,7 +36,9 @@ class RandomUser:
         if not (gender == 'female' or gender == 'male'):
             return None
 
-        return requests.get(self.api + f'&gender={gender}').json()
+        response = requests.get(self.api + f'&gender={gender}')
+        if 'json' in response.headers.get('Content-Type'):
+            return response.json()
 
     def get_random_user_password(self, options, max_length=64, min_length=8):
         if len(options) < 1:
@@ -45,7 +53,9 @@ class RandomUser:
         if not 1 <= min_length <= max_length <= 64:
             raise ValueError('Length must be between 1 and 64!')
 
-        return requests.get(self.api + f'&password={",".join(options)},{min_length}-{max_length}').json()
+        response = requests.get(self.api + f'&password={",".join(options)},{min_length}-{max_length}')
+        if 'json' in response.headers.get('Content-Type'):
+            return response.json()
 
     def get_random_user_nat(self, nationalities):
         if len(nationalities) < 1:
@@ -57,7 +67,9 @@ class RandomUser:
         ] for item in [nat.upper() for nat in nationalities]):
             raise ValueError('The specified nationality does not exist!')
 
-        return requests.get(self.api + f'&nat={",".join(nationalities)}').json()
+        response = requests.get(self.api + f'&nat={",".join(nationalities)}')
+        if 'json' in response.headers.get('Content-Type'):
+            return response.json()
 
     def get_random_user_inc_exc(self, option, params):
         if not (option == 'inc' or option == 'exc'):
@@ -72,4 +84,6 @@ class RandomUser:
         ] for item in [param.lower() for param in params]):
             raise ValueError('The specified parameter does not exist!')
 
-        return requests.get(self.api + f'&{option}={",".join(params)}').json()
+        response = requests.get(self.api + f'&{option}={",".join(params)}')
+        if 'json' in response.headers.get('Content-Type'):
+            return response.json()
